@@ -237,17 +237,17 @@ Resources:
     Properties:
       AllocationId: !GetAtt rEIPProdNatA.AllocationId
       SubnetId: !Ref rDMZSubnetA
-  rEIPProdNatB:
-    Type: AWS::EC2::EIP
-    Properties:
-      Domain: vpc
-  rNATGatewaySubnetB:
-    Type: AWS::EC2::NatGateway
-    DependsOn: rIGWProd
-    Condition: cSupportsNatGateway
-    Properties:
-      AllocationId: !GetAtt rEIPProdNatB.AllocationId
-      SubnetId: !Ref rDMZSubnetB
+  # rEIPProdNatB:
+  #   Type: AWS::EC2::EIP
+  #   Properties:
+  #     Domain: vpc
+  # rNATGatewaySubnetB:
+  #   Type: AWS::EC2::NatGateway
+  #   DependsOn: rIGWProd
+  #   Condition: cSupportsNatGateway
+  #   Properties:
+  #     AllocationId: !GetAtt rEIPProdNatB.AllocationId
+  #     SubnetId: !Ref rDMZSubnetB
   rRouteProdIGW:
     Type: AWS::EC2::Route
     DependsOn: rGWAttachmentProdIGW
@@ -268,7 +268,8 @@ Resources:
     Properties:
       DestinationCidrBlock: 0.0.0.0/0
       RouteTableId: !Ref rRouteTableProdPrivateB
-      NatGatewayId: !Ref rNATGatewaySubnetB
+      NatGatewayId: !Ref rNATGatewaySubnetA
+      # Sending traffic to NatGateway SUbnet A
   rRouteAssocProdDMZA:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:

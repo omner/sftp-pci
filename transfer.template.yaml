@@ -5,16 +5,13 @@ Parameters:
   CreateServer:
     AllowedValues:
       - 'true'
-      - 'false'
     Type: String
     Description: If a server is created, the customer identity provider
       is automatically associated with it.
     Default: 'true'
   SecretsManagerRegion:
     Type: String
-    Description: (Optional) The region the secrets are stored in. If this value is not provided, the
-      region this stack is deployed in will be used. Use this field if you are deploying this stack in
-      a region where SecretsMangager is not available.
+    Description: (Optional) The region the secrets are stored in.
     Default: ''
   DMZSubnetA:
     Description: The ID of the first public subnet where the transfer servers will be deployed in the Production VPC.
