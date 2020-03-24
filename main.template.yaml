@@ -19,11 +19,6 @@ Metadata:
           - VPCTenancy
           - AvailabilityZoneA
           - AvailabilityZoneB
-      # - Label:
-      #     default: AWS Quick Start Configuration
-      #   Parameters:
-      #     - QSS3BucketName
-      #     - QSS3KeyPrefix
     ParameterLabels:
       AvailabilityZoneA:
         default: First Availability Zone
@@ -31,10 +26,6 @@ Metadata:
         default: Second Availability zone
       VPCTenancy:
         default: Instance tenancy
-      # QSS3BucketName:
-      #   default: Quick Start S3 bucket name
-      # QSS3KeyPrefix:
-      #   default: Quick Start S3 key prefix
 
 Parameters:
   AvailabilityZoneA:
