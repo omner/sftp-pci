@@ -73,6 +73,7 @@ Resources:
       TemplateURL: https://sftp-pci.s3.amazonaws.com/transfer.template.yaml
       TimeoutInMinutes: 30
       Parameters:
+        VPCProduction: !GetAtt ProductionVpcTemplate.Outputs.rVPCProduction
         DMZSubnetA: !GetAtt ProductionVpcTemplate.Outputs.rDMZSubnetA
         DMZSubnetB: !GetAtt ProductionVpcTemplate.Outputs.rDMZSubnetB
 Outputs:

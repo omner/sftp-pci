@@ -19,6 +19,9 @@ Parameters:
   DMZSubnetB:
     Description: The ID of the first public subnet where the transfer servers will be deployed in the Production VPC.
     Type: AWS::EC2::Subnet::Id
+  VPCProduction:
+    Description: ID of the Production VPC, where the SFTPServer will be deployed.
+    Type: AWS::EC2::VPC::Id
 Conditions:
   CreateServer:
     Fn::Equals:
@@ -52,6 +55,7 @@ Resources:
         SubnetIds:
           - !Ref DMZSubnetA
           - !Ref DMZSubnetB
+        VpcId: !Ref VPCProduction
       EndpointType: VPC
       IdentityProviderDetails:
         InvocationRole:
