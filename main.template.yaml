@@ -47,11 +47,11 @@ Mappings:
     vResourceEnvironmentTagValue:
       Value: PCI
 Resources:
-  IamTemplate:
-    Type: AWS::CloudFormation::Stack
-    Properties:
-      TemplateURL: https://sftp-pci.s3.amazonaws.com/iam.template.yaml
-      TimeoutInMinutes: 20
+  # IamTemplate:
+  #   Type: AWS::CloudFormation::Stack
+  #   Properties:
+  #     TemplateURL: https://sftp-pci.s3.amazonaws.com/iam.template.yaml
+  #     TimeoutInMinutes: 20
   ProductionVpcTemplate:
     Type: AWS::CloudFormation::Stack
     Properties:
@@ -66,6 +66,15 @@ Resources:
         pAppPrivateSubnetACIDR: 10.100.96.0/21
         pAppPrivateSubnetBCIDR: 10.100.119.0/21
         pVPCTenancy: !Ref VPCTenancy
+  TransferTemplate:
+    Type: AWS::CloudFormation::Stack
+    DependsOn: ProductionVpcTemplate
+    Properties:
+      TemplateURL: https://sftp-pci.s3.amazonaws.com/transfer.template.yml
+      TimeoutInMinutes: 30
+      Parameters:
+        DMZSubnetA: !GetAtt ProductionVpcTemplate.Outputs.rDMZSubnetA
+        DMZSubnetB: !GetAtt ProductionVpcTemplate.Outputs.rDMZSubnetB
 Outputs:
   TemplateType:
     Value: Standard Architecture
