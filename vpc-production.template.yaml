@@ -30,11 +30,6 @@ Metadata:
       - pAppPrivateSubnetACIDR
       - pAppPrivateSubnetBCIDR
       - pVPCTenancy
-    # - Label:
-    #     default: AWS Quick Start Configuration
-    #   Parameters:
-    #   - QSS3BucketName
-    #   - QSS3KeyPrefix
     ParameterLabels:
       pProductionVPCName:
         default: Name of Production VPC
@@ -50,10 +45,6 @@ Metadata:
         default: CIDR block of Application A subnet (private)
       pVPCTenancy:
         default: Instance tenancy
-      # QSS3BucketName:
-      #   default: Quick Start S3 Bucket Name
-      # QSS3KeyPrefix:
-      #   default: Quick Start S3 Key Prefix
 Parameters:
   pRegionAZ1Name:
     Description: Availability Zone 1 Name in Region
@@ -116,25 +107,6 @@ Parameters:
     Description: Log Group for capturing VPC Flow Logs
     Type: String
     Default: ''
-  # QSS3BucketName:
-  #   AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z\-\.]*[0-9a-zA-Z])*$
-  #   ConstraintDescription: Quick Start bucket name can include numbers, lowercase
-  #     letters, uppercase letters, periods (.), and hyphens (-). It cannot start or
-  #     end with a hyphen (-).
-  #   Default: aws-quickstart
-  #   Description: S3 bucket name for the Quick Start assets. Quick Start bucket name
-  #     can include numbers, lowercase letters, uppercase letters, periods (.), and
-  #     hyphens (-). It cannot start or end with a hyphen (-).
-  #   Type: String
-  # QSS3KeyPrefix:
-  #   AllowedPattern: ^[0-9a-zA-Z-/]*$
-  #   ConstraintDescription: Quick Start key prefix can include numbers, lowercase letters,
-  #     uppercase letters, hyphens (-), and forward slash (/).
-  #   Default: quickstart-compliance-nist/
-  #   Description: S3 key prefix for the Quick Start assets. Quick Start key prefix
-  #     can include numbers, lowercase letters, uppercase letters, hyphens (-), and
-  #     forward slash (/).
-  #   Type: String
 Conditions:
   cGovCloudCondition:
     !Equals
@@ -175,15 +147,7 @@ Resources:
       - IpProtocol: tcp
         FromPort: 22
         ToPort: 22
-        CidrIp: 0.0.0.0/0
-      # - IpProtocol: tcp
-      #   FromPort: 80
-      #   ToPort: 80
-      #   CidrIp: !Ref pProductionCIDR
-      # - IpProtocol: tcp
-      #   FromPort: 443
-      #   ToPort: 443
-      #   CidrIp: !Ref pProductionCIDR
+        CidrIp: '0.0.0.0/0'
       Tags:
       - Key: Name
         Value: sg-sftp-production
@@ -278,25 +242,6 @@ Resources:
     Properties:
       AllocationId: !GetAtt rEIPProdNatB.AllocationId
       SubnetId: !Ref rDMZSubnetB
-  # rNatInstanceTemplate:
-  #   Type: AWS::CloudFormation::Stack
-  #   Condition: cNeedNatInstance
-  #   Properties:
-  #     TemplateURL:
-  #       !Sub
-  #       - https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}submodules/quickstart-compliance-common/templates/nat-instance.template
-  #       - QSS3Region: s3
-  #     TimeoutInMinutes: 20
-  #     Parameters:
-  #       pDMZSubnetA: !Ref rDMZSubnetA
-  #       pSecurityGroupVpcNat: !Ref rSecurityGroupVpcNat
-  #       pNatAmi: !Ref pNatAmi
-  #       pNatInstanceType: !Ref pNatInstanceType
-  #       pVpcId: !Ref rVPCProduction
-  #       pVpcName: !Ref pProductionVPCName
-  #       pRouteTablePrivateA: !Ref rRouteTableProdPrivateA
-  #       pRouteTablePrivateB: !Ref rRouteTableProdPrivateB
-  #       pEipNatAllocationId: !GetAtt rEIPProdNatA.AllocationId
   rRouteProdIGW:
     Type: AWS::EC2::Route
     DependsOn: rGWAttachmentProdIGW
