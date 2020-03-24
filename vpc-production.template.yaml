@@ -274,25 +274,25 @@ Resources:
     Properties:
       AllocationId: !GetAtt rEIPProdNatB.AllocationId
       SubnetId: !Ref rDMZSubnetB
-  rNatInstanceTemplate:
-    Type: AWS::CloudFormation::Stack
-    Condition: cNeedNatInstance
-    Properties:
-      TemplateURL:
-        !Sub
-        - https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}submodules/quickstart-compliance-common/templates/nat-instance.template
-        - QSS3Region: s3
-      TimeoutInMinutes: 20
-      Parameters:
-        pDMZSubnetA: !Ref rDMZSubnetA
-        pSecurityGroupVpcNat: !Ref rSecurityGroupVpcNat
-        pNatAmi: !Ref pNatAmi
-        pNatInstanceType: !Ref pNatInstanceType
-        pVpcId: !Ref rVPCProduction
-        pVpcName: !Ref pProductionVPCName
-        pRouteTablePrivateA: !Ref rRouteTableProdPrivateA
-        pRouteTablePrivateB: !Ref rRouteTableProdPrivateB
-        pEipNatAllocationId: !GetAtt rEIPProdNatA.AllocationId
+  # rNatInstanceTemplate:
+  #   Type: AWS::CloudFormation::Stack
+  #   Condition: cNeedNatInstance
+  #   Properties:
+  #     TemplateURL:
+  #       !Sub
+  #       - https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}submodules/quickstart-compliance-common/templates/nat-instance.template
+  #       - QSS3Region: s3
+  #     TimeoutInMinutes: 20
+  #     Parameters:
+  #       pDMZSubnetA: !Ref rDMZSubnetA
+  #       pSecurityGroupVpcNat: !Ref rSecurityGroupVpcNat
+  #       pNatAmi: !Ref pNatAmi
+  #       pNatInstanceType: !Ref pNatInstanceType
+  #       pVpcId: !Ref rVPCProduction
+  #       pVpcName: !Ref pProductionVPCName
+  #       pRouteTablePrivateA: !Ref rRouteTableProdPrivateA
+  #       pRouteTablePrivateB: !Ref rRouteTableProdPrivateB
+  #       pEipNatAllocationId: !GetAtt rEIPProdNatA.AllocationId
   rRouteProdIGW:
     Type: AWS::EC2::Route
     DependsOn: rGWAttachmentProdIGW

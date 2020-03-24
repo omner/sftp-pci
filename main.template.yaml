@@ -74,22 +74,14 @@ Mappings:
       Value: Environment
     vResourceEnvironmentTagValue:
       Value: PCI
-Conditions:
-  GovCloudCondition:
-    !Equals
-    - !Ref AWS::Region
-    - us-gov-west-1
-  LaunchAsDedicatedInstance:
-    !Equals
-    - !Ref VPCTenancy
-    - dedicated
 Resources:
   IamTemplate:
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL:
         !Sub
-        - https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}submodules/quickstart-compliance-common/templates/iam.template
+        #- https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}submodules/quickstart-compliance-common/templates/iam.template
+        - https://sftp-pci.s3.amazonaws.com/iam.template.yaml
         - QSS3Region: s3
       TimeoutInMinutes: 20
   ProductionVpcTemplate:
@@ -112,23 +104,6 @@ Resources:
         pVPCTenancy: !Ref VPCTenancy
         QSS3BucketName: !Ref QSS3BucketName
         QSS3KeyPrefix: !Sub ${QSS3KeyPrefix}submodules/quickstart-compliance-common/
-  ConfigRulesTemplate:
-    Type: AWS::CloudFormation::Stack
-    DependsOn:
-      - IamTemplate
-      - ProductionVpcTemplate
-    Properties:
-      TemplateURL:
-        !Sub
-        - https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}submodules/quickstart-compliance-common/templates/config-rules.template
-        - QSS3Region: s3
-      TimeoutInMinutes: 20
-      Parameters:
-        pRequiredTagKey:
-          !FindInMap
-          - CustomVariables
-          - vResourceEnvironmentTagKey
-          - Value
 Outputs:
   TemplateType:
     Value: Standard Architecture
