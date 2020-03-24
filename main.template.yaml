@@ -70,7 +70,7 @@ Resources:
     Type: AWS::CloudFormation::Stack
     DependsOn: ProductionVpcTemplate
     Properties:
-      TemplateURL: https://sftp-pci.s3.amazonaws.com/transfer.template.yml
+      TemplateURL: https://sftp-pci.s3.amazonaws.com/transfer.template.yaml
       TimeoutInMinutes: 30
       Parameters:
         DMZSubnetA: !GetAtt ProductionVpcTemplate.Outputs.rDMZSubnetA
