@@ -115,8 +115,7 @@ Parameters:
   pFlowLogGroup:
     Description: Log Group for capturing VPC Flow Logs
     Type: String
-    Default: pci-flows
-    # Default: ''
+    Default: ''
   # QSS3BucketName:
   #   AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z\-\.]*[0-9a-zA-Z])*$
   #   ConstraintDescription: Quick Start bucket name can include numbers, lowercase
