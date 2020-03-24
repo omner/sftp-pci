@@ -50,18 +50,12 @@ Resources:
   IamTemplate:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL:
-        !Sub
-        - https://sftp-pci.s3.amazonaws.com/iam.template.yaml
-        - QSS3Region: s3
+      TemplateURL: https://sftp-pci.s3.amazonaws.com/iam.template.yaml
       TimeoutInMinutes: 20
   ProductionVpcTemplate:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL:
-        !Sub
-        - https://sftp-pci.s3.amazonaws.com/vpc-production.template.yaml
-        - QSS3Region: s3
+      TemplateURL: https://sftp-pci.s3.amazonaws.com/vpc-production.template.yaml
       TimeoutInMinutes: 20
       Parameters:
         pRegionAZ1Name: !Ref AvailabilityZoneA
