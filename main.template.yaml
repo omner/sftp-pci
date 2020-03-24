@@ -97,7 +97,8 @@ Resources:
     Properties:
       TemplateURL:
         !Sub
-        - https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}submodules/quickstart-compliance-common/templates/vpc-production.template
+        #- https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}submodules/quickstart-compliance-common/templates/vpc-production.template
+        - https://sftp-pci.s3.amazonaws.com/vpc-production.template.yaml
         - QSS3Region: s3
       TimeoutInMinutes: 20
       Parameters:
