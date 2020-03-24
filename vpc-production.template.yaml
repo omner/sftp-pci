@@ -106,7 +106,7 @@ Parameters:
   pFlowLogGroup:
     Description: Log Group for capturing VPC Flow Logs
     Type: String
-    Default: !Ref pProductionVPCName
+    Default: ProductionVPCName_Flow
     #Default: ''
 Conditions:
   cGovCloudCondition:
