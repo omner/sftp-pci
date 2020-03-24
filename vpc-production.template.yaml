@@ -106,7 +106,8 @@ Parameters:
   pFlowLogGroup:
     Description: Log Group for capturing VPC Flow Logs
     Type: String
-    Default: ''
+    Default: !Ref pProductionVPCName
+    #Default: ''
 Conditions:
   cGovCloudCondition:
     !Equals
@@ -209,10 +210,16 @@ Resources:
     Type: AWS::EC2::NetworkAcl
     Properties:
       VpcId: !Ref rVPCProduction
+      Tags:
+      - Key: Name
+        Value: Production ACL Public
   rNACLPrivate:
     Type: AWS::EC2::NetworkAcl
     Properties:
       VpcId: !Ref rVPCProduction
+      Tags:
+      - Key: Name
+        Value: Production ACL Private
   rRouteTableMain:
     Type: AWS::EC2::RouteTable
     Properties:
