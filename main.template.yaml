@@ -40,25 +40,6 @@ Parameters:
     Default: default
     AllowedValues:
       - default
-  # QSS3BucketName:
-  #   AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-.]*[0-9a-zA-Z])*$
-  #   ConstraintDescription: Quick Start bucket name can include numbers, lowercase
-  #     letters, uppercase letters, periods (.), and hyphens (-). It cannot start or
-  #     end with a hyphen (-). If you are unsure, do not change this value.
-  #   Default: aws-quickstart
-  #   Description: S3 bucket name for the Quick Start assets. Quick Start bucket name
-  #     can include numbers, lowercase letters, uppercase letters, and hyphens (-).
-  #     It cannot start or end with a hyphen (-). If you are unsure, do not change this value.
-  #   Type: String
-  # QSS3KeyPrefix:
-  #   AllowedPattern: ^[0-9a-zA-Z-/]*$
-  #   ConstraintDescription: Quick Start key prefix can include numbers, lowercase letters,
-  #     uppercase letters, hyphens (-), and forward slash (/). If you are unsure, do not change this value.
-  #   Default: quickstart-compliance-pci/
-  #   Description: S3 key prefix for the Quick Start assets. Quick Start key prefix
-  #     can include numbers, lowercase letters, uppercase letters, hyphens (-), and
-  #     forward slash (/). If you are unsure, do not change this value.
-  #   Type: String
 Mappings:
   CustomVariables:
     vResourceEnvironmentTagKey:
@@ -73,7 +54,6 @@ Resources:
         !Sub
         #- https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}submodules/quickstart-compliance-common/templates/iam.template
         - https://sftp-pci.s3.amazonaws.com/iam.template.yaml
-        # - QSS3Region: s3
       TimeoutInMinutes: 20
   ProductionVpcTemplate:
     Type: AWS::CloudFormation::Stack
@@ -82,7 +62,6 @@ Resources:
         !Sub
         #- https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}submodules/quickstart-compliance-common/templates/vpc-production.template
         - https://sftp-pci.s3.amazonaws.com/vpc-production.template.yaml
-        # - QSS3Region: s3
       TimeoutInMinutes: 20
       Parameters:
         pRegionAZ1Name: !Ref AvailabilityZoneA
@@ -93,8 +72,6 @@ Resources:
         pAppPrivateSubnetACIDR: 10.100.96.0/21
         pAppPrivateSubnetBCIDR: 10.100.119.0/21
         pVPCTenancy: !Ref VPCTenancy
-        # QSS3BucketName: !Ref QSS3BucketName
-        # QSS3KeyPrefix: !Sub ${QSS3KeyPrefix}submodules/quickstart-compliance-common/
 Outputs:
   TemplateType:
     Value: Standard Architecture
