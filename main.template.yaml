@@ -1,0 +1,139 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Provides nesting for required stacks to deploy a baseline architecure to support PCI compliance.
+Metadata:
+  Stack:
+    Value: 0
+  VersionDate:
+    Value: 20190805
+  Identifier:
+    Value: main
+  Input:
+    Description: Input of all required parameters in nested stacks
+  Output:
+    Description: N/A
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: 'VPC Configuration'
+        Parameters:
+          - VPCTenancy
+          - AvailabilityZoneA
+          - AvailabilityZoneB
+      - Label:
+          default: AWS Quick Start Configuration
+        Parameters:
+          - QSS3BucketName
+          - QSS3KeyPrefix
+    ParameterLabels:
+      AvailabilityZoneA:
+        default: First Availability Zone
+      AvailabilityZoneB:
+        default: Second Availability zone
+      VPCTenancy:
+        default: Instance tenancy
+      QSS3BucketName:
+        default: Quick Start S3 bucket name
+      QSS3KeyPrefix:
+        default: Quick Start S3 key prefix
+
+Parameters:
+  AvailabilityZoneA:
+    Description: The name of Availability Zone 1.
+    Type: AWS::EC2::AvailabilityZone::Name
+  AvailabilityZoneB:
+    Description: The name of Availability Zone 2. This must be different from the name of the first Availability Zone.
+    Type: AWS::EC2::AvailabilityZone::Name
+  VPCTenancy:
+    Description: The tenancy attribute for the instances launched into the VPC. If unsure, leave as default.
+    Type: String
+    Default: default
+    AllowedValues:
+      - default
+  QSS3BucketName:
+    AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-.]*[0-9a-zA-Z])*$
+    ConstraintDescription: Quick Start bucket name can include numbers, lowercase
+      letters, uppercase letters, periods (.), and hyphens (-). It cannot start or
+      end with a hyphen (-). If you are unsure, do not change this value.
+    Default: aws-quickstart
+    Description: S3 bucket name for the Quick Start assets. Quick Start bucket name
+      can include numbers, lowercase letters, uppercase letters, and hyphens (-).
+      It cannot start or end with a hyphen (-). If you are unsure, do not change this value.
+    Type: String
+  QSS3KeyPrefix:
+    AllowedPattern: ^[0-9a-zA-Z-/]*$
+    ConstraintDescription: Quick Start key prefix can include numbers, lowercase letters,
+      uppercase letters, hyphens (-), and forward slash (/). If you are unsure, do not change this value.
+    Default: quickstart-compliance-pci/
+    Description: S3 key prefix for the Quick Start assets. Quick Start key prefix
+      can include numbers, lowercase letters, uppercase letters, hyphens (-), and
+      forward slash (/). If you are unsure, do not change this value.
+    Type: String
+Mappings:
+  CustomVariables:
+    vResourceEnvironmentTagKey:
+      Value: Environment
+    vResourceEnvironmentTagValue:
+      Value: PCI
+Conditions:
+  GovCloudCondition:
+    !Equals
+    - !Ref AWS::Region
+    - us-gov-west-1
+  LaunchAsDedicatedInstance:
+    !Equals
+    - !Ref VPCTenancy
+    - dedicated
+Resources:
+  IamTemplate:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL:
+        !Sub
+        - https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}submodules/quickstart-compliance-common/templates/iam.template
+        - QSS3Region: s3
+      TimeoutInMinutes: 20
+  ProductionVpcTemplate:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL:
+        !Sub
+        - https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}submodules/quickstart-compliance-common/templates/vpc-production.template
+        - QSS3Region: s3
+      TimeoutInMinutes: 20
+      Parameters:
+        pRegionAZ1Name: !Ref AvailabilityZoneA
+        pRegionAZ2Name: !Ref AvailabilityZoneB
+        pProductionVPCName: Production VPC
+        pBastionSSHCIDR: 0.0.0.0/0
+        pDMZSubnetACIDR: 10.100.10.0/24
+        pDMZSubnetBCIDR: 10.100.20.0/24
+        pManagementCIDR: 10.10.0.0/16
+        pAppPrivateSubnetACIDR: 10.100.96.0/21
+        pAppPrivateSubnetBCIDR: 10.100.119.0/21
+        pDBPrivateSubnetACIDR: 10.100.194.0/21
+        pDBPrivateSubnetBCIDR: 10.100.212.0/21
+        pVPCTenancy: !Ref VPCTenancy
+        QSS3BucketName: !Ref QSS3BucketName
+        QSS3KeyPrefix: !Sub ${QSS3KeyPrefix}submodules/quickstart-compliance-common/
+  ConfigRulesTemplate:
+    Type: AWS::CloudFormation::Stack
+    DependsOn:
+      - IamTemplate
+      - ProductionVpcTemplate
+    Properties:
+      TemplateURL:
+        !Sub
+        - https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}submodules/quickstart-compliance-common/templates/config-rules.template
+        - QSS3Region: s3
+      TimeoutInMinutes: 20
+      Parameters:
+        pRequiredTagKey:
+          !FindInMap
+          - CustomVariables
+          - vResourceEnvironmentTagKey
+          - Value
+Outputs:
+  TemplateType:
+    Value: Standard Architecture
+  TemplateVersion:
+    Value: 2.5
