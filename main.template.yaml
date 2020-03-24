@@ -52,7 +52,6 @@ Resources:
     Properties:
       TemplateURL:
         !Sub
-        #- https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}submodules/quickstart-compliance-common/templates/iam.template
         - https://sftp-pci.s3.amazonaws.com/iam.template.yaml
       TimeoutInMinutes: 20
   ProductionVpcTemplate:
@@ -60,7 +59,6 @@ Resources:
     Properties:
       TemplateURL:
         !Sub
-        #- https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}submodules/quickstart-compliance-common/templates/vpc-production.template
         - https://sftp-pci.s3.amazonaws.com/vpc-production.template.yaml
       TimeoutInMinutes: 20
       Parameters:
