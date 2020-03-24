@@ -56,44 +56,24 @@ Resources:
           - !Ref DMZSubnetA
           - !Ref DMZSubnetB
       EndpointType: VPC
-    IdentityProviderDetails:
-      InvocationRole:
-        Fn::GetAtt: TransferIdentityProviderRole.Arn
-      Url:
-        Fn::Join:
-          - ''
-          - - https://
-            - Ref: CustomIdentityProviderApi
-            - .execute-api.
-            - Ref: AWS::Region
-            - .amazonaws.com/
-            - Ref: ApiStage
-    IdentityProviderType: API_GATEWAY
-    LoggingRole:
-      Fn::GetAtt: CloudWatchLoggingRole.Arn
-    Tags:
-      - Key: Name
-        Value: SFTPServer
-  # TransferServer:
-  #   Type: AWS::Transfer::Server
-  #   Condition: CreateServer
-  #   Properties:
-  #     EndpointType: PUBLIC
-  #     IdentityProviderDetails:
-  #       InvocationRole:
-  #         Fn::GetAtt: TransferIdentityProviderRole.Arn
-  #       Url:
-  #         Fn::Join:
-  #           - ''
-  #           - - https://
-  #             - Ref: CustomIdentityProviderApi
-  #             - .execute-api.
-  #             - Ref: AWS::Region
-  #             - .amazonaws.com/
-  #             - Ref: ApiStage
-  #     IdentityProviderType: API_GATEWAY
-  #     LoggingRole:
-  #       Fn::GetAtt: CloudWatchLoggingRole.Arn
+      IdentityProviderDetails:
+        InvocationRole:
+          Fn::GetAtt: TransferIdentityProviderRole.Arn
+        Url:
+          Fn::Join:
+            - ''
+            - - https://
+              - Ref: CustomIdentityProviderApi
+              - .execute-api.
+              - Ref: AWS::Region
+              - .amazonaws.com/
+              - Ref: ApiStage
+      IdentityProviderType: API_GATEWAY
+      LoggingRole:
+        Fn::GetAtt: CloudWatchLoggingRole.Arn
+      Tags:
+        - Key: Name
+          Value: SFTPServer
   CloudWatchLoggingRole:
     Description: IAM role used by Transfer  to log API requests to CloudWatch
     Type: AWS::IAM::Role
