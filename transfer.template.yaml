@@ -472,7 +472,6 @@ Resources:
       LifecycleConfiguration:
         Rules:
         - Id: GlacierRule
-          Prefix: glacier
           Status: Enabled
           ExpirationInDays: '400'
           Transitions:
