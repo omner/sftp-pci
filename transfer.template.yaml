@@ -462,7 +462,7 @@ Resources:
               type: string
   EncryptedS3Bucket:
     Type: AWS::S3::Bucket
-    DeletionPolicy: Retain
+    DeletionPolicy: Delete
     Properties:
       AccessControl: Private
       BucketName: !Sub 'sftp-${AWS::Region}-${AWS::AccountId}'
