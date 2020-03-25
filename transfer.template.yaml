@@ -20,7 +20,7 @@ Parameters:
     Description: The ID of the first public subnet where the transfer servers will be deployed in the Production VPC.
     Type: AWS::EC2::Subnet::Id
   VPCProduction:
-    Description: ID of the Production VPC, where the SFTPServer will be deployed.
+    Description: ID of the Production VPC where the SFTPServer will be deployed.
     Type: AWS::EC2::VPC::Id
 Conditions:
   CreateServer:
