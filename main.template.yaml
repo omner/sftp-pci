@@ -78,6 +78,6 @@ Resources:
         DMZSubnetB: !GetAtt ProductionVpcTemplate.Outputs.rDMZSubnetB
 Outputs:
   TemplateType:
-    Value: Standard Architecture
+    Value: Standard SFTPServer Architecture
   TemplateVersion:
-    Value: 2.5
+    Value: 1.0

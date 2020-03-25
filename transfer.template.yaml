@@ -459,6 +459,32 @@ Resources:
             type: array
             items:
               type: string
+  EncryptedS3Bucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      AccessControl: Private
+      BucketName: !Sub 'sftp-${AWS::Region}-${AWS::AccountId}'
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      LifecycleConfiguration:
+        Rules:
+        - Id: GlacierRule
+          Prefix: glacier
+          Status: Enabled
+          ExpirationInDays: '400'
+          Transitions:
+            - TransitionInDays: '90'
+              StorageClass: GLACIER
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      VersioningConfiguration:
+        Status: Enabled
 Outputs:
   ServerId:
     Value:
@@ -478,9 +504,11 @@ Outputs:
         - Ref: AWS::Region
         - .amazonaws.com/
         - Ref: ApiStage
-    Condition: NotCreateServer
   TransferIdentityProviderInvocationRole:
     Description: IAM Role to pass to AWS Transfer CreateServer call as part of optional IdentityProviderDetails
     Value:
       Fn::GetAtt: TransferIdentityProviderRole.Arn
-    Condition: NotCreateServer
+  BucketName:
+    Description: Name of the sample Amazon S3 bucket with a lifecycle configuration.
+    Value:
+      Ref: EncryptedS3Bucket
