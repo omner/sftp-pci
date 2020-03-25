@@ -56,6 +56,7 @@ Resources:
           - !Ref DMZSubnetA
           - !Ref DMZSubnetB
         VpcId: !Ref VPCProduction
+        VpcEndpointId: !Ref TrVPCEndpoint
       EndpointType: VPC
       IdentityProviderDetails:
         InvocationRole:
@@ -484,6 +485,34 @@ Resources:
         RestrictPublicBuckets: true
       VersioningConfiguration:
         Status: Enabled
+  TrVPCEndpoint:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      ServiceName: !Sub com.amazonaws.${AWS::Region}.transfer.server
+      VpcId: !Ref VPCProduction
+      VpcEndpointType: Interface
+      PrivateDnsEnabled: true
+      SecurityGroupIds:
+        - !Ref TrSecurityGroup
+      SubnetIds:
+        - !Ref DMZSubnetA
+        - !Ref DMZSubnetB
+      Tags:
+        - Key: Name
+          Value: SFTPServerEP
+  TrSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow Internet connection to SFTPServer
+      VpcId: !Ref VPCProduction
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 0.0.0.0/0
+      Tags:
+      - Key: Name
+        Value: sg-sftp-production
 Outputs:
   ServerId:
     Value:

@@ -138,21 +138,6 @@ Resources:
         Value: !Ref pProductionVPCName
       - Key: Environment
         Value: !Ref pEnvironment
-  rSecurityGroupVpcNat:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: Allow NAT from production
-      VpcId: !Ref rVPCProduction
-      SecurityGroupIngress:
-      - IpProtocol: tcp
-        FromPort: 22
-        ToPort: 22
-        CidrIp: 0.0.0.0/0
-      Tags:
-      - Key: Name
-        Value: sg-sftp-production
-      - Key: Environment
-        Value: !Ref pEnvironment
   rDMZSubnetA:
     Type: AWS::EC2::Subnet
     Properties:
@@ -505,6 +490,4 @@ Outputs:
     Value: !Ref rNACLPrivate
   rNACLPublic:
     Value: !Ref rNACLPublic
-  rSecurityGroupVpcNat:
-    Value: !Ref rSecurityGroupVpcNat
 ...
