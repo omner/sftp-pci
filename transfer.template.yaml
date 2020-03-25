@@ -497,9 +497,6 @@ Resources:
       SubnetIds:
         - !Ref DMZSubnetA
         - !Ref DMZSubnetB
-      Tags:
-        - Key: Name
-          Value: SFTPServerEP
   TrSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -518,9 +515,6 @@ Outputs:
     Value:
       Fn::GetAtt: TransferServer.ServerId
     Condition: CreateServer
-  StackArn:
-    Value:
-      Ref: AWS::StackId
   TransferIdentityProviderUrl:
     Description: URL to pass to AWS Transfer CreateServer call as part of optional IdentityProviderDetails
     Value:
