@@ -1,19 +1,44 @@
 ---
 AWSTemplateFormatVersion: 2010-09-09
-Description: Provides the base security, IAM, and access configuration for the AWS account (qs-1nb14cqc0)
+Description: Provides the base configuration for the a transfer user
 Metadata:
   Stack:
     Value: 1
   VersionDate:
-    Value: 20160510
+    Value: 20200325
   Identifier:
-    Value: template-iam
+    Value: template-users
   Input:
-    Description: CloudTrail bucket name
+    Description: None
   Output:
     Description: Outputs ID of all deployed resources
 Resources:
-  rSysAdminRole:
+  EncryptedS3Bucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Delete
+    Properties:
+      AccessControl: Private
+      BucketName: !Sub 'sftp-${AWS::Region}-${AWS::AccountId}'
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      LifecycleConfiguration:
+        Rules:
+        - Id: GlacierRule
+          Status: Enabled
+          ExpirationInDays: '400'
+          Transitions:
+            - TransitionInDays: '90'
+              StorageClass: GLACIER
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      VersioningConfiguration:
+        Status: Enabled
+  TrUserRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
@@ -21,303 +46,52 @@ Resources:
         - Effect: Allow
           Principal:
             Service:
-            - ec2.amazonaws.com
+            - transfer.amazonaws.com
           Action:
           - sts:AssumeRole
-  rSysAdminProfile:
-    Type: AWS::IAM::InstanceProfile
-    DependsOn: rSysAdminRole
-    Properties:
-      Path: /
-      Roles:
-      - !Ref rSysAdminRole
-  rSysAdmin:
-    Type: AWS::IAM::Group
-    Properties:
-      Path: /
-  rSysAdminPolicy:
+  TrUserPolicy:
     Type: AWS::IAM::ManagedPolicy
     Properties:
       PolicyDocument:
         Version: 2012-10-17
         Statement:
         - Effect: Allow
-          NotAction: iam:*
-          Resource: '*'
-          Condition:
-            Bool:
-              aws:MultiFactorAuthPresent: true
-        - Effect: Deny
-          Action: aws-portal:*Billing
-          Resource: '*'
-        - Effect: Deny
           Action:
-          - cloudtrail:DeleteTrail
-          - cloudtrail:StopLogging
-          - cloudtrail:UpdateTrail
-          Resource: '*'
-        - Effect: Deny
+            - s3:ListBucket
+            - s3:GetBucketLocation
+          Resource: !GetAtt SFTPServerS3Bucket.Arn
+        - Effect: Allow
           Action:
-          - kms:Create*
-          - kms:Revoke*
-          - kms:Enable*
-          - kms:Get*
-          - kms:Disable*
-          - kms:Delete*
-          - kms:Put*
-          - kms:Update*
-          Resource: '*'
+          - s3:PutObject
+          - s3:GetObject
+          - s3:DeleteObjectVersion
+          - s3:DeleteObject
+          - s3:GetObjectVersion
+          Resource: !Sub "${SFTPServerS3Bucket.Arn}/*"
       Roles:
-      - !Ref rSysAdminRole
-      Groups:
-      - !Ref rSysAdmin
-  rIAMAdminGroup:
-    Type: AWS::IAM::Group
+      - !Ref TrUserRole
+  TrUserSecret:
+    Type: 'AWS::SecretsManager::Secret'
     Properties:
-      Path: /
-  rIAMAdminRole:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Statement:
-        - Effect: Allow
-          Principal:
-            Service:
-            - ec2.amazonaws.com
-          Action:
-          - sts:AssumeRole
-  rIAMAdminProfile:
-    Type: AWS::IAM::InstanceProfile
-    DependsOn: rIAMAdminRole
-    Properties:
-      Path: /
-      Roles:
-      - !Ref rIAMAdminRole
-  rIAMAdminPolicy:
-    Type: AWS::IAM::ManagedPolicy
-    Properties:
-      PolicyDocument:
-        Version: 2012-10-17
-        Statement:
-        - Effect: Allow
-          Action: iam:*
-          Resource: '*'
-          Condition:
-            Bool:
-              aws:MultiFactorAuthPresent: true
-        - Effect: Deny
-          Action: aws-portal:*Billing
-          Resource: '*'
-      Roles:
-      - !Ref rIAMAdminRole
-      Groups:
-      - !Ref rIAMAdminGroup
-  rInstanceOpsGroup:
-    Type: AWS::IAM::Group
-    Properties:
-      Path: /
-  rInstanceOpsRole:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Statement:
-        - Effect: Allow
-          Principal:
-            Service:
-            - ec2.amazonaws.com
-          Action:
-          - sts:AssumeRole
-  rInstanceOpsProfile:
-    Type: AWS::IAM::InstanceProfile
-    DependsOn: rIAMAdminRole
-    Properties:
-      Path: /
-      Roles:
-      - !Ref rInstanceOpsRole
-  rInstanceOpsPolicy:
-    Type: AWS::IAM::ManagedPolicy
-    Properties:
-      PolicyDocument:
-        Version: 2012-10-17
-        Statement:
-        - Action: ec2:*
-          Effect: Allow
-          Resource: '*'
-        - Effect: Allow
-          Action: elasticloadbalancing:*
-          Resource: '*'
-        - Effect: Allow
-          Action: cloudwatch:*
-          Resource: '*'
-        - Effect: Allow
-          Action: autoscaling:*
-          Resource: '*'
-        - Effect: Deny
-          Action:
-          - ec2:CreateVpc*
-          - ec2:DeleteVpc*
-          - ec2:ModifyVpc*
-          - ec2:CreateSubnet*
-          - ec2:DeleteSubnet*
-          - ec2:ModifySubnet*
-          - ec2:Create*Route*
-          - ec2:DeleteRoute*
-          - ec2:AssociateRoute*
-          - ec2:ReplaceRoute*
-          - ec2:CreateVpn*
-          - ec2:DeleteVpn*
-          - ec2:AttachVpn*
-          - ec2:DetachVpn*
-          - ec2:CreateNetworkAcl*
-          - ec2:DeleteNetworkAcl*
-          - ec2:ReplaceNetworkAcl*
-          - ec2:*Gateway*
-          - ec2:*PeeringConnection*
-          Resource: '*'
-        - Effect: Deny
-          Action: aws-portal:*Billing
-          Resource: '*'
-        - Effect: Deny
-          Action:
-          - kms:Create*
-          - kms:Revoke*
-          - kms:Enable*
-          - kms:Get*
-          - kms:Disable*
-          - kms:Delete*
-          - kms:Put*
-          - kms:Update*
-          Resource: '*'
-      Roles:
-      - !Ref rInstanceOpsRole
-      Groups:
-      - !Ref rInstanceOpsGroup
-  rReadOnlyAdminGroup:
-    Type: AWS::IAM::Group
-    Properties:
-      Path: /
-  rReadOnlyAdminRole:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Statement:
-        - Effect: Allow
-          Principal:
-            Service:
-            - ec2.amazonaws.com
-          Action:
-          - sts:AssumeRole
-  rReadOnlyAdminProfile:
-    Type: AWS::IAM::InstanceProfile
-    DependsOn: rReadOnlyAdminRole
-    Properties:
-      Path: /
-      Roles:
-      - !Ref rReadOnlyAdminRole
-  rReadOnlyAdminPolicy:
-    Type: AWS::IAM::ManagedPolicy
-    DependsOn: rReadOnlyAdminProfile
-    Properties:
-      PolicyDocument:
-        Version: 2012-10-17
-        Statement:
-        - Action:
-          - appstream:Get*
-          - autoscaling:Describe*
-          - cloudformation:DescribeStacks
-          - cloudformation:DescribeStackEvents
-          - cloudformation:DescribeStackResource
-          - cloudformation:DescribeStackResources
-          - cloudformation:GetTemplate
-          - cloudformation:List*
-          - cloudfront:Get*
-          - cloudfront:List*
-          - cloudtrail:DescribeTrails
-          - cloudtrail:GetTrailStatus
-          - cloudwatch:Describe*
-          - cloudwatch:Get*
-          - cloudwatch:List*
-          - directconnect:Describe*
-          - dynamodb:GetItem
-          - dynamodb:BatchGetItem
-          - dynamodb:Query
-          - dynamodb:Scan
-          - dynamodb:DescribeTable
-          - dynamodb:ListTables
-          - ec2:Describe*
-          - elasticache:Describe*
-          - elasticbeanstalk:Check*
-          - elasticbeanstalk:Describe*
-          - elasticbeanstalk:List*
-          - elasticbeanstalk:RequestEnvironmentInfo
-          - elasticbeanstalk:RetrieveEnvironmentInfo
-          - elasticloadbalancing:Describe*
-          - elastictranscoder:Read*
-          - elastictranscoder:List*
-          - iam:List*
-          - iam:Get*
-          - kinesis:Describe*
-          - kinesis:Get*
-          - kinesis:List*
-          - opsworks:Describe*
-          - opsworks:Get*
-          - route53:Get*
-          - route53:List*
-          - redshift:Describe*
-          - redshift:ViewQueriesInConsole
-          - rds:Describe*
-          - rds:ListTagsForResource
-          - s3:Get*
-          - s3:List*
-          - sdb:GetAttributes
-          - sdb:List*
-          - sdb:Select*
-          - ses:Get*
-          - ses:List*
-          - sns:Get*
-          - sns:List*
-          - sqs:GetQueueAttributes
-          - sqs:ListQueues
-          - sqs:ReceiveMessage
-          - storagegateway:List*
-          - storagegateway:Describe*
-          - trustedadvisor:Describe*
-          Effect: Allow
-          Resource: '*'
-        - Effect: Deny
-          Action: aws-portal:*Billing
-          Resource: '*'
-      Roles:
-      - !Ref rReadOnlyAdminRole
-      Groups:
-      - !Ref rReadOnlyAdminGroup
-  rReadOnlyBillingGroup:
-    Type: AWS::IAM::Group
-    Properties:
-      Path: /
-  rReadOnlyBillingPolicy:
-    Type: AWS::IAM::ManagedPolicy
-    Properties:
-      PolicyDocument:
-        Version: 2012-10-17
-        Statement:
-        - Effect: Allow
-          Action: aws-portal:View*
-          Resource: '*'
-        - Effect: Deny
-          Action: aws-portal:*Account
-          Resource: '*'
-      Groups:
-      - !Ref rReadOnlyBillingGroup
+      Name: SFTP/usecret
+      Description: "This secret represent an user for SFTPServer. Keep SFTP/User format"
+      GenerateSecretString:
+        GenerateStringKey: "Password"
+        PasswordLength: 20
+        ExcludeCharacters: '"@/\'
+        SecretStringTemplate: !Sub
+          -'{
+          "Role": "${TransferUserRole}",
+          "HomeDirectoryDetails": "[{\"Entry\": \"/\", \"Target\": \"/${TransferBucketName}/${Transfer:UserName}\"}]",
+          "PublicKey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDXNru8HA8cxsgJV00YYpCK7H56gCkCWHqKwQp8O5Euqzgelvr3izYtUprW8hHre4Rup5c++4duetqxqHMuNvkOSrgocrSeDStPaRJxFPxtx/qsJ/IWYd9l6p6RnMMXvqDf4pCZ+N1WHDBv2ke59/oMDUeEws2pPgPv6lLfwnmtgkm9/AMROJw6js9ioUatFaTkZcCo2tf59jP3x3LzBnsIFZ3R5ex7Yb8X20LQpQsGzZqqE2NrOdtECfC/xZzt3uUs+O8AHelAC/gSNBe5YZIiRhwY53UH6s0Zc+s+Er6hVfPQ5xOLhYyFNMXLDarsE+ellNGKiLxJ+7s7kQ9rm+L5"
+          }'
+          - TransferUserRole: !Ref TrUserRole
+            TransferBucketName: !Ref EncryptedS3Bucket
 Outputs:
-  rSysAdmin:
-    Value: !Ref rSysAdmin
-  rIAMAdminGroup:
-    Value: !Ref rIAMAdminGroup
-  rInstanceOpsGroup:
-    Value: !Ref rInstanceOpsGroup
-  rReadOnlyBillingGroup:
-    Value: !Ref rReadOnlyBillingGroup
-  rReadOnlyAdminGroup:
-    Value: !Ref rReadOnlyAdminGroup
+  UserRole:
+    Value: !Ref TrUserRole
+  BucketName:
+    Value: !Ref EncryptedS3Bucket
+  SecretName:
+    Value: !Ref TrUserSecret
 ...

@@ -1,7 +1,7 @@
 ---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Provides networking configuration for a standard, public facing application,
-  separates private-public subnets and enforces traffic with NACL rules (qs-1nb14cqcl)
+  separates private-public subnets and enforces traffic with NACL rules.
 Metadata:
   Stack:
     Value: 2
@@ -10,7 +10,7 @@ Metadata:
   Identifier:
     Value: template-vpc-production
   Input:
-    Description: CIDR blocks, VPC names, KeyName, EC2 instance size.
+    Description: CIDR blocks, VPC names, AZs.
   Output:
     Description: Outputs ID of all deployed resources.
   AWS::CloudFormation::Interface:

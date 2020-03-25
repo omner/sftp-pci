@@ -66,11 +66,16 @@ Resources:
     DependsOn: ProductionVpcTemplate
     Properties:
       TemplateURL: https://sftp-pci.s3.amazonaws.com/transfer.template.yaml
-      TimeoutInMinutes: 30
+      TimeoutInMinutes: 20
       Parameters:
         VPCProduction: !GetAtt ProductionVpcTemplate.Outputs.rVPCProduction
         DMZSubnetA: !GetAtt ProductionVpcTemplate.Outputs.rDMZSubnetA
         DMZSubnetB: !GetAtt ProductionVpcTemplate.Outputs.rDMZSubnetB
+  UsersTemplate:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://sftp-pci.s3.amazonaws.com/users.template.yaml
+      TimeoutInMinutes: 20
 Outputs:
   TemplateType:
     Value: Standard SFTPServer Architecture
