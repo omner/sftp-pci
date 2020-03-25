@@ -81,7 +81,7 @@ Resources:
         ExcludeCharacters: '"@/\'
         SecretStringTemplate:
           !Sub
-          -'{"Role": "${TransferUserRole}","HomeDirectoryDetails": "[{\"Entry\": \"/\", \"Target\": \"/${TransferBucketName}/${Transfer:UserName}\"}]","PublicKey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDXNru8HA8cxsgJV00YYpCK7H56gCkCWHqKwQp8O5Euqzgelvr3izYtUprW8hHre4Rup5c++4duetqxqHMuNvkOSrgocrSeDStPaRJxFPxtx/qsJ/IWYd9l6p6RnMMXvqDf4pCZ+N1WHDBv2ke59/oMDUeEws2pPgPv6lLfwnmtgkm9/AMROJw6js9ioUatFaTkZcCo2tf59jP3x3LzBnsIFZ3R5ex7Yb8X20LQpQsGzZqqE2NrOdtECfC/xZzt3uUs+O8AHelAC/gSNBe5YZIiRhwY53UH6s0Zc+s+Er6hVfPQ5xOLhYyFNMXLDarsE+ellNGKiLxJ+7s7kQ9rm+L5"}'
+          -'{"Role": "${TransferUserRole}","HomeDirectoryDetails": "[{\"Entry\": \"/\", \"Target\": \"/${TransferBucketName}/${!Transfer:UserName}\"}]","PublicKey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDXNru8HA8cxsgJV00YYpCK7H56gCkCWHqKwQp8O5Euqzgelvr3izYtUprW8hHre4Rup5c++4duetqxqHMuNvkOSrgocrSeDStPaRJxFPxtx/qsJ/IWYd9l6p6RnMMXvqDf4pCZ+N1WHDBv2ke59/oMDUeEws2pPgPv6lLfwnmtgkm9/AMROJw6js9ioUatFaTkZcCo2tf59jP3x3LzBnsIFZ3R5ex7Yb8X20LQpQsGzZqqE2NrOdtECfC/xZzt3uUs+O8AHelAC/gSNBe5YZIiRhwY53UH6s0Zc+s+Er6hVfPQ5xOLhYyFNMXLDarsE+ellNGKiLxJ+7s7kQ9rm+L5"}'
           - TransferUserRole: !Ref TrUserRole
             TransferBucketName: !Ref EncryptedS3Bucket
 Outputs:
