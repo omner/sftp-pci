@@ -91,6 +91,11 @@ Resources:
     Type: 'AWS::GuardDuty::Detector'
     Properties:
       Enable: true
+  SecurityHub:
+    Type: 'AWS::SecurityHub::Hub'
+    Properties:
+      Tags:
+        Environment: Production
 Outputs:
   CloudTrail:
     Value: !Ref CloudTrailProd
@@ -98,4 +103,6 @@ Outputs:
     Value: !Ref CloudTrailLogGroup
   CloudTrailBucket:
     Value: !Ref CloudTrailS3BucketPolicy
+  SecurityHubArn:
+    Value: !Ref SecurityHub
 ...
