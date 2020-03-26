@@ -34,7 +34,6 @@ Resources:
   CloudTrailLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub 'CloudTrail-${AWS::Region}-${AWS::AccountId}'
       RetentionInDays: 400
   CloudTrailS3Bucket:
     Type: 'AWS::S3::Bucket'
