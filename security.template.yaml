@@ -9,6 +9,8 @@ Resources:
   CloudWatchTrailLogRole:
     Description: IAM role used by VPC to log data to CloudWatch
     Type: AWS::IAM::Role
+    DependsOn:
+      - CloudTrailLogGroup
     Properties:
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
@@ -52,6 +54,8 @@ Resources:
         RestrictPublicBuckets: true
   CloudTrailS3BucketPolicy:
     Type: 'AWS::S3::BucketPolicy'
+    DependsOn:
+      - CloudTrailS3Bucket
     Properties:
       Bucket: !Ref CloudTrailS3Bucket
       PolicyDocument:
