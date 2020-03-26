@@ -78,6 +78,7 @@ Resources:
     DependsOn:
       - CloudTrailLogGroup
       - CloudWatchTrailLogRole
+      - CloudTrailS3Bucket
     Properties:
       TrailName: !Sub 'CloudTrail-${AWS::Region}'
       CloudWatchLogsLogGroupArn: !GetAtt CloudTrailLogGroup.Arn
