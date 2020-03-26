@@ -71,9 +71,6 @@ Resources:
           Resource: !Sub 'arn:aws:s3:::${CloudTrailS3Bucket}/AWSLogs/${AWS::AccountId}/*
   CloudTrailProd:
     Type: 'AWS::CloudTrail::Trail'
-    DependsOn:
-      - CloudTrailLogGroup
-      - CloudWatchTrailLogRole
     Properties:
       TrailName: !Sub 'CloudTrail-${AWS::Region}'
       CloudWatchLogsLogGroupArn: !GetAtt CloudTrailLogGroup.Arn
