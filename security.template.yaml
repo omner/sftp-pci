@@ -6,8 +6,11 @@ Parameters:
     Description: ID of the Production VPC where the SFTPServer will be deployed.
     Type: AWS::EC2::VPC::Id
 Resources:
+  CloudTrailLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      RetentionInDays: 400
   CloudWatchTrailLogRole:
-    Description: IAM role used by VPC to log data to CloudWatch
     Type: AWS::IAM::Role
     DependsOn:
       - CloudTrailLogGroup
@@ -33,10 +36,6 @@ Resources:
                   - logs:DescribeLogStreams
                   - logs:PutLogEvents
                 Resource: !GetAtt CloudTrailLogGroup.Arn
-  CloudTrailLogGroup:
-    Type: AWS::Logs::LogGroup
-    Properties:
-      RetentionInDays: 400
   CloudTrailS3Bucket:
     Type: 'AWS::S3::Bucket'
     DeletionPolicy: Delete
@@ -79,6 +78,7 @@ Resources:
       - CloudTrailLogGroup
       - CloudWatchTrailLogRole
       - CloudTrailS3Bucket
+      - CloudTrailS3BucketPolicy
     Properties:
       TrailName: !Sub 'CloudTrail-${AWS::Region}'
       CloudWatchLogsLogGroupArn: !GetAtt CloudTrailLogGroup.Arn
