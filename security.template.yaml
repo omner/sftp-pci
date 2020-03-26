@@ -26,29 +26,68 @@ Resources:
             Statement:
               - Effect: Allow
                 Action:
-                  - logs:CreateLogGroup
                   - logs:CreateLogStream
                   - logs:DescribeLogGroups
                   - logs:DescribeLogStreams
                   - logs:PutLogEvents
-                Resource: "*"
+                Resource: !GetAtt CloudTrailLogGroup.Arn
   CloudTrailLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: !Sub 'CloudTrail-${AWS::Region}-${AWS::AccountId}'
       RetentionInDays: 400
+  CloudTrailS3Bucket:
+    Type: 'AWS::S3::Bucket'
+    DeletionPolicy: Delete
+    Properties:
+      AccessControl: Private
+      BucketName: !Sub 'CloudTrail-${AWS::Region}-${AWS::AccountId}'
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+  CloudTrailS3BucketPolicy:
+    Type: 'AWS::S3::BucketPolicy'
+    Properties:
+      Bucket: !Ref CloudTrailS3Bucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Sid: AWSCloudTrailAclCheck
+          Effect: Allow
+          Principal:
+            Service: 'cloudtrail.amazonaws.com'
+          Action: 's3:GetBucketAcl'
+          Resource: !GetAtt CloudTrailS3Bucket
+        - Sid: AWSCloudTrailWrite
+          Effect: Allow
+          Principal:
+            Service: 'cloudtrail.amazonaws.com'
+          Action: 's3:PutObject'
+          Resource: !Sub 'arn:aws:s3:::${CloudTrailS3Bucket}/AWSLogs/${AWS::AccountId}/*
   CloudTrailProd:
+    DependsOn:
+      - CloudTrailLogGroup
+      - CloudWatchTrailLogRole
     Type: AWS::CloudTrail::Trail
     Properties:
-      TrailName: !Sub 'CloudTrailProd-${AWS::Region}'
+      TrailName: !Sub 'CloudTrail-${AWS::Region}'
       CloudWatchLogsLogGroupArn: !GetAtt CloudTrailLogGroup.Arn
       CloudWatchLogsRoleArn: !GetAtt CloudWatchTrailLogRole.Arn
+      S3BucketName: !Ref CloudTrailS3Bucket
       EnableLogFileValidation: true
       IsLogging: true
       IsMultiRegionTrail: false
       IncludeGlobalServiceEvents: true
 Outputs:
-  CloudTrailID:
+  CloudTrail:
     Value: !Ref CloudTrailProd
   CloudTrailLogGroupID:
-      Value: !Ref CloudTrailLogGroup
+    Value: !Ref CloudTrailLogGroup
+  CloudTrailBucket:
+    Value: !Ref CloudTrailS3BucketPolicy
