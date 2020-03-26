@@ -47,8 +47,6 @@ Resources:
       IsMultiRegionTrail: true
       IncludeGlobalServiceEvents: true
 Outputs:
-  FlowLogID:
-    Value: !Ref VPCFlowLog
   CloudTrailID:
     Value: !Ref CloudTrail
   CloudTrailLogGroupID:
