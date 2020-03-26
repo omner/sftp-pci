@@ -1,0 +1,45 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: A basic template to enable security services to a given VPC.
+Parameters:
+  VPCProduction:
+    Description: ID of the Production VPC where the SFTPServer will be deployed.
+    Type: AWS::EC2::VPC::Id
+Resources:
+  VPCFlowLog:
+    Type: AWS::EC2::FlowLog
+    Properties:
+      DeliverLogsPermissionArn: !GetAtt FlowLogRole.Arn
+      LogGroupName: !Sub 'FlowLogs-${AWS::Region}-${AWS::AccountId}'
+      ResourceId: !Ref VPCProduction
+      ResourceType: VPC
+      TrafficType: ALL
+  FlowLogRole:
+    Description: IAM role used by VPC to log FlowLogs to CloudWatch
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - vpc-flow-logs.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Policies:
+        - PolicyName: FlowLogsPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:DescribeLogGroups
+                  - logs:DescribeLogStreams
+                  - logs:PutLogEvents
+                Resource: "*"
+Outputs:
+  FlowLogID:
+    Value: !Ref VPCFlowLog

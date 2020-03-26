@@ -76,6 +76,14 @@ Resources:
     Properties:
       TemplateURL: https://sftp-pci.s3.amazonaws.com/users.template.yaml
       TimeoutInMinutes: 20
+  # SecurityTemplate:
+  #   Type: AWS::CloudFormation::Stack
+  #   DependsOn: ProductionVpcTemplate
+  #   Properties:
+  #     TemplateURL: https://sftp-pci.s3.amazonaws.com/security.template.yaml
+  #     TimeoutInMinutes: 20
+  #     Parameters:
+  #       VPCProduction: !GetAtt ProductionVpcTemplate.Outputs.rVPCProduction
 Outputs:
   TemplateType:
     Value: Standard SFTPServer Architecture

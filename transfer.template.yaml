@@ -1,6 +1,7 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
 Description: A basic template for creating an AWS Transfer for SFTP service.
+  Service use API Gateway for authentication as IdP.
 Parameters:
   CreateServer:
     AllowedValues:
@@ -56,7 +57,7 @@ Resources:
           - !Ref DMZSubnetA
           - !Ref DMZSubnetB
         VpcId: !Ref VPCProduction
-        # VpcEndpointId: !Ref TrVPCEndpoint
+        # VpcEndpointId: !Ref TrVPCEndpoint (Not supported)
       EndpointType: VPC
       IdentityProviderDetails:
         InvocationRole:
