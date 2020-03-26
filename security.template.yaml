@@ -40,7 +40,7 @@ Resources:
     DeletionPolicy: Delete
     Properties:
       AccessControl: Private
-      BucketName: !Sub 'CloudTrail-${AWS::Region}-${AWS::AccountId}'
+      BucketName: !Sub 'cloudtrail-${AWS::Region}-${AWS::AccountId}'
       BucketEncryption:
         ServerSideEncryptionConfiguration:
           - ServerSideEncryptionByDefault:
