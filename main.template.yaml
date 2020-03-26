@@ -26,7 +26,6 @@ Metadata:
         default: Second Availability zone
       VPCTenancy:
         default: Instance tenancy
-
 Parameters:
   AvailabilityZoneA:
     Description: The name of Availability Zone 1.
@@ -76,14 +75,14 @@ Resources:
     Properties:
       TemplateURL: https://sftp-pci.s3.amazonaws.com/users.template.yaml
       TimeoutInMinutes: 20
-  # SecurityTemplate:
-  #   Type: AWS::CloudFormation::Stack
-  #   DependsOn: ProductionVpcTemplate
-  #   Properties:
-  #     TemplateURL: https://sftp-pci.s3.amazonaws.com/security.template.yaml
-  #     TimeoutInMinutes: 20
-  #     Parameters:
-  #       VPCProduction: !GetAtt ProductionVpcTemplate.Outputs.rVPCProduction
+  SecurityTemplate:
+    Type: AWS::CloudFormation::Stack
+    DependsOn: ProductionVpcTemplate
+    Properties:
+      TemplateURL: https://sftp-pci.s3.amazonaws.com/security.template.yaml
+      TimeoutInMinutes: 20
+      Parameters:
+        VPCProduction: !GetAtt ProductionVpcTemplate.Outputs.rVPCProduction
 Outputs:
   TemplateType:
     Value: Standard SFTPServer Architecture

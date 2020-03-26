@@ -6,16 +6,8 @@ Parameters:
     Description: ID of the Production VPC where the SFTPServer will be deployed.
     Type: AWS::EC2::VPC::Id
 Resources:
-  VPCFlowLog:
-    Type: AWS::EC2::FlowLog
-    Properties:
-      DeliverLogsPermissionArn: !GetAtt FlowLogRole.Arn
-      LogGroupName: !Sub 'FlowLogs-${AWS::Region}-${AWS::AccountId}'
-      ResourceId: !Ref VPCProduction
-      ResourceType: VPC
-      TrafficType: ALL
-  FlowLogRole:
-    Description: IAM role used by VPC to log FlowLogs to CloudWatch
+  CloudWatchTrailLogRole:
+    Description: IAM role used by VPC to log data to CloudWatch
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
@@ -24,7 +16,7 @@ Resources:
           - Effect: Allow
             Principal:
               Service:
-                - vpc-flow-logs.amazonaws.com
+                - cloudtrail.amazonaws.com
             Action:
               - sts:AssumeRole
       Policies:
@@ -40,6 +32,24 @@ Resources:
                   - logs:DescribeLogStreams
                   - logs:PutLogEvents
                 Resource: "*"
+  CloudTrailLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      RetentionInDays: 400
+  CloudTrail:
+    Type: AWS::CloudTrail::Trail
+    Properties:
+      TrailName: !Sub 'CloudTrail-${AWS::Region}-${AWS::AccountId}'
+      CloudWatchLogsLogGroupArn: !GetAtt CloudTrailLogGroup.Arn
+      CloudWatchLogsRoleArn: !GetAtt CloudWatchTrailLogRole.Arn
+      EnableLogFileValidation: true
+      IsLogging: true
+      IsMultiRegionTrail: true
+      IncludeGlobalServiceEvents: true
 Outputs:
   FlowLogID:
     Value: !Ref VPCFlowLog
+  CloudTrailID:
+    Value: !Ref CloudTrail
+  CloudTrailLogGroupID:
+      Value: !Ref CloudTrailLogGroup
