@@ -430,7 +430,6 @@ Resources:
       VpcId: !Ref rVPCProduction
       InternetGatewayId: !Ref rIGWProd
   rProductionVpcFlowLogsServiceRole:
-    Condition: cEnableFlowLogs
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
@@ -456,7 +455,6 @@ Resources:
             Effect: Allow
             Resource: '*'
   rProductionVpcFlowLog:
-    Condition: cEnableFlowLogs
     Type: AWS::EC2::FlowLog
     Properties:
       DeliverLogsPermissionArn: !GetAtt rProductionVpcFlowLogsServiceRole.Arn
