@@ -579,8 +579,7 @@ Resources:
                 }
             ]
         }
-        - TransferServerID:
-            Fn::GetAtt: TransferServer.ServerId
+        - TransferServerID: !GetAtt TransferServer.ServerId
 Outputs:
   ServerId:
     Value:
