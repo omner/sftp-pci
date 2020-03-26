@@ -9,6 +9,7 @@ Resources:
   CloudTrailLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
+      LogGroupName: !Sub 'CloudTrail-${AWS::Region}-${AWS::AccountId}'
       RetentionInDays: 400
   CloudWatchTrailLogRole:
     Type: AWS::IAM::Role
