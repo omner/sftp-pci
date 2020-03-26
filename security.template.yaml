@@ -76,8 +76,8 @@ Resources:
     Type: AWS::CloudTrail::Trail
     Properties:
       TrailName: !Sub 'CloudTrail-${AWS::Region}'
-      CloudWatchLogsLogGroupArn: !GetAtt CloudTrailLogGroup.Arn
-      CloudWatchLogsRoleArn: !GetAtt CloudWatchTrailLogRole.Arn
+      #CloudWatchLogsLogGroupArn: !GetAtt CloudTrailLogGroup.Arn
+      #CloudWatchLogsRoleArn: !GetAtt CloudWatchTrailLogRole.Arn
       S3BucketName: !Ref CloudTrailS3Bucket
       EnableLogFileValidation: true
       IsLogging: true
