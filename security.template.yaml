@@ -91,6 +91,32 @@ Resources:
     Type: 'AWS::GuardDuty::Detector'
     Properties:
       Enable: true
+  # ConfigS3Bucket:
+  #   Type: 'AWS::S3::Bucket'
+  #   DeletionPolicy: Delete
+  #   Properties:
+  #     AccessControl: Private
+  #     BucketName: !Sub 'config-${AWS::Region}-${AWS::AccountId}'
+  #     BucketEncryption:
+  #       ServerSideEncryptionConfiguration:
+  #         - ServerSideEncryptionByDefault:
+  #             SSEAlgorithm: AES256
+  #     PublicAccessBlockConfiguration:
+  #       BlockPublicAcls: true
+  #       BlockPublicPolicy: true
+  #       IgnorePublicAcls: true
+  #       RestrictPublicBuckets: true
+  # ConfigRecorder:
+  #   Type: 'AWS::Config::ConfigurationRecorder'
+  #   Properties:
+  #     Name: !Sub 'sftp-${AWS::Region}-${AWS::AccountId}'
+  #     RoleARN: !GetAtt XXXXXXXXX.Arn
+  # ConfigDeliveryChannel:
+  #   Type: 'AWS::Config::DeliveryChannel'
+  #   Properties:
+  #     ConfigSnapshotDeliveryProperties:
+  #       DeliveryFrequency: Six_Hours
+  #     S3BucketName: !Ref ConfigS3Bucket
   SecurityHub:
     Type: 'AWS::SecurityHub::Hub'
     Properties:
