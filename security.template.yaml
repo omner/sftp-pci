@@ -84,3 +84,4 @@ Outputs:
     Value: !Ref CloudTrailLogGroup
   CloudTrailBucket:
     Value: !Ref CloudTrailS3BucketPolicy
+...
