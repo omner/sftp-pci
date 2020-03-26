@@ -518,7 +518,7 @@ Resources:
                     "width": 12,
                     "height": 6,
                     "properties": {
-                        "query": "SOURCE '/aws/transfer/${TransferServerID}' | filter @message like \"OPEN\"\n\n    | parse @message \"*.* OPEN Path=* Mode=*\" as user, sessionID, path, mode\n\n    | fields @timestamp\n\n    | sort @timestamp desc\n\n    | stats count_distinct(sessionID) as uniquesessions by bin(10min)",
+                        "query": '"SOURCE '/aws/transfer/${TransferServerID}' | filter @message like \"OPEN\"\n\n    | parse @message \"*.* OPEN Path=* Mode=*\" as user, sessionID, path, mode\n\n    | fields @timestamp\n\n    | sort @timestamp desc\n\n    | stats count_distinct(sessionID) as uniquesessions by bin(10min)"',
                         "region": "${AWS::Region}",
                         "title": "Unique Sessions",
                         "view": "bar"
@@ -531,7 +531,7 @@ Resources:
                     "width": 12,
                     "height": 6,
                     "properties": {
-                        "query": "SOURCE '/aws/transfer/${TransferServerID}' | filter @message like \"READ\"\n    | fields @timestamp\n    | sort @timestamp desc\n    | stats count(*) as FileRead by bin(10min)",
+                        "query": '"SOURCE '/aws/transfer/${TransferServerID}' | filter @message like \"READ\"\n    | fields @timestamp\n    | sort @timestamp desc\n    | stats count(*) as FileRead by bin(10min)"',
                         "region": "${AWS::Region}",
                         "title": "Get Operations",
                         "view": "bar"
@@ -544,7 +544,7 @@ Resources:
                     "width": 12,
                     "height": 6,
                     "properties": {
-                        "query": "SOURCE '/aws/transfer/${TransferServerID}' | filter @message like \"WRITE\"\n    | fields @timestamp\n    | sort @timestamp desc\n    | stats count(*) as FileWrite by bin(10min)",
+                        "query": '"SOURCE '/aws/transfer/${TransferServerID}' | filter @message like \"WRITE\"\n    | fields @timestamp\n    | sort @timestamp desc\n    | stats count(*) as FileWrite by bin(10min)"',
                         "region": "${AWS::Region}",
                         "stacked": false,
                         "title": "Put Operations",
@@ -558,7 +558,7 @@ Resources:
                     "width": 12,
                     "height": 9,
                     "properties": {
-                        "query": "SOURCE '/aws/transfer/${TransferServerID}' | filter @message like \"ERROR\"\n| fields @timestamp\n| sort @timestamp desc\n| stats count(*) as Errors by bin(24hr)",
+                        "query": '"SOURCE '/aws/transfer/${TransferServerID}' | filter @message like \"ERROR\"\n| fields @timestamp\n| sort @timestamp desc\n| stats count(*) as Errors by bin(24hr)"',
                         "region": "${AWS::Region}",
                         "title": "Error Count",
                         "view": "bar"
@@ -571,14 +571,11 @@ Resources:
                     "width": 12,
                     "height": 6,
                     "properties": {
-                        "query": "SOURCE '/aws/transfer/${TransferServerID}' | filter @message like \"OPEN\"\n| parse @message \"*.* OPEN Path=* Mode=*\" as user, sessionID, path, mode\n| fields @timestamp\n| filter mode like \"READ\"\n| sort path desc\n| stats count(path) as NumberOfRequests by path\n| limit 10",
+                        "query": '"SOURCE '/aws/transfer/${TransferServerID}' | filter @message like \"OPEN\"\n| parse @message \"*.* OPEN Path=* Mode=*\" as user, sessionID, path, mode\n| fields @timestamp\n| filter mode like \"READ\"\n| sort path desc\n| stats count(path) as NumberOfRequests by path\n| limit 10"',
                         "region": "${AWS::Region}",
                         "title": "Top File Downloads",
                         "view": "table"
-                    }
-                }
-            ]
-        }'
+                    }}]}'
         - TransferServerID: !GetAtt TransferServer.ServerId
 Outputs:
   ServerId:
