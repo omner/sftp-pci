@@ -87,6 +87,10 @@ Resources:
       IsLogging: true
       IsMultiRegionTrail: false
       IncludeGlobalServiceEvents: true
+  GuardDuty:
+    Type: 'AWS::GuardDuty::Detector'
+    Properties:
+      Enable: true
 Outputs:
   CloudTrail:
     Value: !Ref CloudTrailProd
