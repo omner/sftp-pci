@@ -70,9 +70,9 @@ Resources:
           Action: 's3:PutObject'
           Resource: !Sub 'arn:aws:s3:::${CloudTrailS3Bucket}/AWSLogs/${AWS::AccountId}/*
   CloudTrailProd:
-    DependsOn:
-      - CloudTrailLogGroup
-      - CloudWatchTrailLogRole
+    # DependsOn:
+    #   - CloudTrailLogGroup
+    #   - CloudWatchTrailLogRole
     Type: AWS::CloudTrail::Trail
     Properties:
       TrailName: !Sub 'CloudTrail-${AWS::Region}'
