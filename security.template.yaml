@@ -35,16 +35,17 @@ Resources:
   CloudTrailLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
+      LogGroupName: !Sub 'CloudTrail-${AWS::Region}-${AWS::AccountId}'
       RetentionInDays: 400
   CloudTrailProd:
     Type: AWS::CloudTrail::Trail
     Properties:
-      TrailName: !Sub 'CloudTrailProd-${AWS::Region}-${AWS::AccountId}'
+      TrailName: !Sub 'CloudTrailProd-${AWS::Region}'
       CloudWatchLogsLogGroupArn: !GetAtt CloudTrailLogGroup.Arn
       CloudWatchLogsRoleArn: !GetAtt CloudWatchTrailLogRole.Arn
       EnableLogFileValidation: true
       IsLogging: true
-      IsMultiRegionTrail: true
+      IsMultiRegionTrail: false
       IncludeGlobalServiceEvents: true
 Outputs:
   CloudTrailID:
