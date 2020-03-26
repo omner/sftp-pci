@@ -12,8 +12,7 @@ Resources:
       RetentionInDays: 400
   CloudWatchTrailLogRole:
     Type: AWS::IAM::Role
-    DependsOn:
-      - CloudTrailLogGroup
+    DependsOn: CloudTrailLogGroup
     Properties:
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
@@ -53,8 +52,7 @@ Resources:
         RestrictPublicBuckets: true
   CloudTrailS3BucketPolicy:
     Type: 'AWS::S3::BucketPolicy'
-    DependsOn:
-      - CloudTrailS3Bucket
+    DependsOn: CloudTrailS3Bucket
     Properties:
       Bucket: !Ref CloudTrailS3Bucket
       PolicyDocument:
@@ -65,7 +63,7 @@ Resources:
           Principal:
             Service: 'cloudtrail.amazonaws.com'
           Action: 's3:GetBucketAcl'
-          Resource: !GetAtt CloudTrailS3Bucket
+          Resource: !GetAtt CloudTrailS3Bucket.Arn
         - Sid: AWSCloudTrailWrite
           Effect: Allow
           Principal:
