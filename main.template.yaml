@@ -1,3 +1,4 @@
+---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Provides nesting for required stacks to deploy a baseline architecure to support PCI compliance.
 Metadata:
@@ -88,3 +89,4 @@ Outputs:
     Value: Standard SFTPServer Architecture
   TemplateVersion:
     Value: 1.0
+...

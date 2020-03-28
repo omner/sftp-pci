@@ -1,7 +1,7 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
-Description: A basic template for creating an AWS Transfer for SFTP service.
-  Service use API Gateway for authentication as IdP.
+Description: Provides a template for creating an AWS Transfer for SFTP service.
+  The service use API Gateway for authentication endpoint as IdP.
 Parameters:
   CreateServer:
     AllowedValues:
@@ -611,3 +611,4 @@ Outputs:
       Fn::GetAtt: TransferIdentityProviderRole.Arn
   CloudWatchDashboard:
     Value: !Ref TrDashboard
+...

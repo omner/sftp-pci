@@ -1,5 +1,5 @@
 ---
-AWSTemplateFormatVersion: 2010-09-09
+AWSTemplateFormatVersion: '2010-09-09'
 Description: Provides the base configuration for a SFTPServer user and its respective
   role and policy. It builds a s3 bucket with versioning, encryption and LC policy.
 Metadata:

@@ -1,6 +1,6 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
-Description: A basic template to enable security services to a given VPC.
+Description: Provides a template to enable security services and logging to a given VPC.
 Parameters:
   VPCProduction:
     Description: ID of the Production VPC where the SFTPServer will be deployed.
