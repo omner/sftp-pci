@@ -39,11 +39,14 @@ Resources:
                 - secretsmanager:GetSecretValue
                 - secretsmanager:PutSecretValue
                 - secretsmanager:UpdateSecretVersionStage
-                - secretsmanager:GetRandomPassword
               Resource:
                 Fn::Sub:
                   - arn:aws:secretsmanager:${SecretsRegion}:${AWS::AccountId}:secret:SFTP/*
                   - SecretsRegion: !Ref AWS::Region
+            - Effect: Allow
+              Action:
+                - secretsmanager:GetRandomPassword
+              Resource: '*'
   SecretRotationLambdaPermission:
     Type: AWS::Lambda::Permission
     Properties:
