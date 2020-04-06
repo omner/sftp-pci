@@ -63,11 +63,7 @@ Resources:
         Fn::GetAtt: SecretRotationLambdaRole.Arn
       Environment:
         Variables:
-          SecretsManagerRegion:
-            Fn::If:
-              - SecretsManagerRegionProvided
-              - Ref: SecretsManagerRegion
-              - Ref: AWS::Region
+          SecretsManagerRegion: !Ref AWS::Region
       Code:
         ZipFile:
           Fn::Sub: |
