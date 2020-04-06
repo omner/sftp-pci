@@ -43,11 +43,7 @@ Resources:
               Resource:
                 Fn::Sub:
                   - arn:aws:secretsmanager:${SecretsRegion}:${AWS::AccountId}:secret:SFTP/*
-                  - SecretsRegion:
-                      Fn::If:
-                        - SecretsManagerRegionProvided
-                        - Ref: SecretsManagerRegion
-                        - Ref: AWS::Region
+                  - SecretsRegion: !Ref AWS::Region
   SecretRotationLambdaPermission:
     Type: AWS::Lambda::Permission
     Properties:
@@ -80,7 +76,7 @@ Resources:
                 step = event['Step']
 
                 # Setup the client
-                service_client = boto3.client('secretsmanager', endpoint_url=os.environ['SECRETS_MANAGER_ENDPOINT'])
+                service_client = boto3.client('secretsmanager', region_name=os.environ['SecretsManagerRegion'])
 
                 # Make sure the version is staged correctly
                 metadata = service_client.describe_secret(SecretId=arn)
