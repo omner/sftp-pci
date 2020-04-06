@@ -149,6 +149,13 @@ Resources:
                 # Finalize by staging the secret version current
                 service_client.update_secret_version_stage(SecretId=arn, VersionStage="AWSCURRENT", MoveToVersionId=token, RemoveFromVersionId=current_version)
                 logger.info("finishSecret: Successfully set AWSCURRENT stage to version %s for secret %s." % (token, arn))
+  SecretRotationSchedule:
+    Type: AWS::SecretsManager::RotationSchedule
+    Properties:
+      RotationLambdaARN: !GetAtt SecretRotationLambda.Arn
+      RotationRules:
+        AutomaticallyAfterDays: 1
+      SecretId: !Ref TrUserSecret
 
   EncryptedS3Bucket:
     Type: AWS::S3::Bucket
