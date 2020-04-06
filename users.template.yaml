@@ -24,8 +24,19 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Runtime: python3.7
-      Handler: index.lambda_handler
-      CodeUri: s3://bucket/key
+      Handler: smrotation.lambda_handler
+      CodeUri: https://sftp-pci.s3.amazonaws.com/src
+      Policies:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        - Statement:
+          - Effect: Allow
+            Action:
+              - secretsmanager:DescribeSecret
+              - secretsmanager:GetSecretValue
+              - secretsmanager:PutSecretValue
+              - secretsmanager:UpdateSecretVersionStage
+              - secretsmanager:GetRandomPassword
+            Resource: '*'
   EncryptedS3Bucket:
     Type: AWS::S3::Bucket
     DeletionPolicy: Delete
