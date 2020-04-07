@@ -128,7 +128,7 @@ Resources:
                     secret_dict['Password'] = passwd['RandomPassword']
 
                     # Put the secret
-                    service_client.put_secret_value(SecretId=arn, ClientRequestToken=token, SecretString=json.dumps(secret_dict), VersionStages=['AWSPENDING'])
+                    service_client.put_secret_value(SecretId=arn, ClientRequestToken=token, SecretString=json.dumps(secret_dict, default=str), VersionStages=['AWSPENDING'])
 
             def set_secret(service_client, arn, token):
                 # This is where the secret should be set in the service
