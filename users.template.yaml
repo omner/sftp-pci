@@ -115,8 +115,7 @@ Resources:
 
             def create_secret(service_client, arn, token):
                 # Make sure the current secret exists
-                # current_dict = service_client.get_secret_value(SecretId=arn, VersionStage="AWSCURRENT")
-                service_client.get_secret_value(SecretId=arn, VersionStage="AWSCURRENT")
+                current_dict = service_client.get_secret_value(SecretId=arn, VersionStage="AWSCURRENT")
 
                 # Now try to get the secret version, if that fails, put a new secret
                 try:
@@ -125,11 +124,10 @@ Resources:
                 except service_client.exceptions.ResourceNotFoundException:
                     # Generate a random password
                     passwd = service_client.get_random_password(ExcludeCharacters=';#,!?`[]^/@"\'\\', PasswordLength=30)
-                    # current_dict['Password'] = passwd['RandomPassword']
+                    current_dict['Password'] = passwd['RandomPassword']
 
                     # Put the secret
-                    # service_client.put_secret_value(SecretId=arn, ClientRequestToken=token, SecretString=json.dumps(current_dict, default=str), VersionStages=['AWSPENDING'])
-                    service_client.put_secret_value(SecretId=arn, ClientRequestToken=token, SecretString=passwd['RandomPassword'], VersionStages=['AWSPENDING'])
+                    service_client.put_secret_value(SecretId=arn, ClientRequestToken=token, SecretString=json.dumps(current_dict, default=str), VersionStages=['AWSPENDING'])
                     logger.info("createSecret: Successfully put secret for ARN %s and version %s." % (arn, token))
 
             def set_secret(service_client, arn, token):
