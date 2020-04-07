@@ -132,11 +132,13 @@ Resources:
 
             def set_secret(service_client, arn, token):
                 # This is where the secret should be set in the service
-                raise NotImplementedError
+                logger.info("setSecret: Step not required.")
+                return
 
             def test_secret(service_client, arn, token):
                 # This is where the secret should be tested against the service
-                raise NotImplementedError
+                logger.info("testSecret: Step not required.")
+                return
 
             def finish_secret(service_client, arn, token):
                 # First describe the secret to get the current version
