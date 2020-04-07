@@ -237,6 +237,4 @@ Outputs:
     Value: !GetAtt TrUserRole.Arn
   BucketName:
     Value: !Ref EncryptedS3Bucket
-  SecretName:
-    Value: !Ref TrUserSecret
 ...
